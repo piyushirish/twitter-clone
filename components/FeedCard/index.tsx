@@ -31,6 +31,9 @@ export const FeedCard: React.FC<FeedCardProps> = (props) => {
                     <p className="p-1 py-0">
                         {data.content}
                     </p>
+                    {
+                        data.imageURL && <Image src={data.imageURL} alt="image" width={500} height={300}/>
+                    }
                     <div className="flex justify-between mt-4 text-xl pr-4">
                         <div>
                         <BiMessageRounded />

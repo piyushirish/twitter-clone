@@ -17,7 +17,6 @@ interface ServerProps {
 }
 
 const UserProfilePage: NextPage<ServerProps> = (props) => {
-    const router = useRouter();
     const {user: currentUser} = useCurrentUser();
     const queryClient = useQueryClient();
 

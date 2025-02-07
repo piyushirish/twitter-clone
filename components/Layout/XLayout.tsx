@@ -6,7 +6,6 @@ import { BiHash, BiHomeCircle, BiUser } from "react-icons/bi";
 import { BsBell, BsBookmark, BsEnvelope } from "react-icons/bs";
 import { CgMoreO } from "react-icons/cg";
 import { FaXTwitter } from "react-icons/fa6";
-import { IoImageOutline } from "react-icons/io5";
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import toast from "react-hot-toast";
 import { graphqlClient } from "@/clients/api";
@@ -142,12 +141,35 @@ const Xlayout: React.FC<Xlayoutprops> = (props) => {
             {props.children}
         </div>
         <div className="col-span-0 sm:col-span-3 p-5">
-          {!user && (
+          {!user ? (
             <div className="p-5 bg-slate-700 rounded-lg ">
               <h1 className="my-2 text-xl">New to X</h1>
               <GoogleLogin onSuccess={handleLoginWithGoogle} />
             </div>
-            )}
+            ): <div className="px-5 py-3 bg-slate-800 rounded-lg ">
+              <h1 className="my-2 text-xl mb-5" >Users you may know</h1>
+              {
+              user?.recommendedUsers?.map(el => (
+              <div className="flex items-center gap-3 mt-2 " key={el?.id}>
+                {el?.profileImageURL && (
+                <Image 
+                src={el?.profileImageURL} 
+                alt="user-image" 
+                className="rounded-full"
+                width={50} 
+                height={50} 
+                />
+                )}
+              <div>
+              <div className=" text-lg">
+                {el?.firstName} {el?.lastName}
+                </div>
+              <Link href={`/${el?.id}`}  className="bg-white text-black text-sm px-5 py-1  w-full rounded-lg">View</Link>
+              </div>
+              </div>))
+            }
+              </div>}
+  
         </div>
       </div>
     </div>;
