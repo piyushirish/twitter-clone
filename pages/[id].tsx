@@ -6,11 +6,11 @@ import Image from "next/image";
 import { useCurrentUser } from "@/hooks/user";
 import FeedCard from "@/components/FeedCard";
 import { Tweet, User } from "@/gql/graphql";
-import React from 'react';
-import { graphql } from '@/gql';
+import React, { useCallback, useMemo } from 'react';
 import { graphqlClient } from '@/clients/api';
 import { getUserByIdQuery } from '@/graphql/query/user';
-import { resolveObjectURL } from 'buffer';
+import { followUserMutation, unfollowUserMutation } from '@/graphql/mutation/user';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ServerProps {
     userInfo?: User
@@ -18,6 +18,32 @@ interface ServerProps {
 
 const UserProfilePage: NextPage<ServerProps> = (props) => {
     const router = useRouter();
+    const {user: currentUser} = useCurrentUser();
+    const queryClient = useQueryClient();
+
+
+    const amIFollowing = useMemo(() => {
+        if(!props.userInfo) return  false;
+        return (
+            (currentUser?.following?.findIndex(
+                (el) => el?.id === props.userInfo?.id
+            ) ?? -1) >= 0 
+        );
+    },[currentUser?.id, props.userInfo]);
+
+    const handleFollowUser = useCallback( async () => {
+        if(!props.userInfo?.id) return;
+
+        await graphqlClient.request(followUserMutation, { to: props.userInfo?.id})
+        await queryClient.invalidateQueries(['currentuser'])
+    },[props.userInfo?.id, queryClient]);
+
+    const handleUnFollowUser = useCallback( async () => {
+        if(!props.userInfo?.id) return;
+
+        await graphqlClient.request(unfollowUserMutation, { to: props.userInfo?.id})
+        await queryClient.invalidateQueries(['currentuser'])
+    },[props.userInfo?.id, queryClient]);
 
    
 
@@ -29,7 +55,7 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
                     <nav className=" flex items-center gap-8 py-1 px-3">
                     <IoMdArrowBack className="text-xl"/>
                     <div>
-                        <h1 className="text-2xl font-bold">Piyush pal</h1>
+                        <h1 className="text-2xl font-bold">{props.userInfo?.firstName} {props.userInfo?.lastName}</h1>
                         <h1 className="text-md text-slate-500">{props.userInfo?.tweets?.length} posts</h1>
                     </div>
                     </nav>
@@ -42,7 +68,27 @@ const UserProfilePage: NextPage<ServerProps> = (props) => {
                             width={100} 
                             height={100}/>)
                             }
-                            <h1 className="text-2xl font-bold mt-5 ">Piyush pal</h1>
+                            <h1 className="text-2xl font-bold mt-5 ">{props.userInfo?.firstName} {props.userInfo?.lastName}</h1>
+                            <div className='flex justify-between items-center'>
+                            <div className='flex gap-4 mt-2 text-sm text-gray-400'>
+                                <span>{props.userInfo?.followers?.length} followers</span>
+                                <span>{props.userInfo?.following?.length} following</span>
+                            </div>
+                            {
+                               currentUser?.id !== props.userInfo?.id && (
+                               <>
+                                    {
+                                        amIFollowing ? (
+                                        <button onClick={handleUnFollowUser} className='bg-white text-black py-1 px-3 rounded-full font-bold'>
+                                            Unfollow
+                                        </button>
+                                        ) : (
+                                        <button onClick={handleFollowUser} className='bg-white text-black py-1 px-3 rounded-full font-bold'>
+                                            Follow</button>)
+                                    }
+                               </>
+                            )}
+                            </div>
                     </div>
                     <div>
                         {props.userInfo?.tweets?.map((tweet) => (
