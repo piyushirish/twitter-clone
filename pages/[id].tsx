@@ -1,4 +1,3 @@
-import {useRouter} from 'next/router';
 import Xlayout from "@/components/Layout/XLayout";
 import {GetServerSideProps, NextPage} from "next";
 import { IoMdArrowBack } from "react-icons/io";

@@ -65,7 +65,6 @@ const Xlayout: React.FC<XlayoutProps> = (props) => {
 
   return (
     <div className="grid grid-cols-12 h-screen w-screen sm:px-20">
-      {/* Left Sidebar (Visible on larger screens) */}
       <div className="hidden sm:flex sm:col-span-3 pt-4 pr-10 relative">
         <div>
           <div className="text-3xl h-fit w-fit mx-2 hover:bg-gray-800 rounded-full p-2 cursor-pointer transition-all">
@@ -85,7 +84,6 @@ const Xlayout: React.FC<XlayoutProps> = (props) => {
                 </li>
               ))}
             </ul>
-            {/* Tweet Button */}
             <div className="mt-5 px-2">
               <button className="hidden sm:block bg-[#1c9bef] hover:bg-sky-600 text-lg font-semibold px-4 py-2 w-full rounded-full">
                 Tweet
@@ -97,7 +95,6 @@ const Xlayout: React.FC<XlayoutProps> = (props) => {
           </div>
         </div>
 
-        {/* User Profile Section */}
         {user && (
           <div className="absolute bottom-5 flex gap-2 items-center hover:bg-gray-800 rounded-full px-3 py-2 sm:pr-14 cursor-pointer">
             {user?.profileImageURL && (
@@ -116,12 +113,10 @@ const Xlayout: React.FC<XlayoutProps> = (props) => {
         )}
       </div>
 
-      {/* Main Content (Full width on mobile) */}
       <div className="col-span-12 sm:col-span-6 border-r-[1px] border-l-[1px] border-gray-700 h-screen overflow-scroll">
         {props.children}
       </div>
 
-      {/* Right Sidebar (Hidden on mobile) */}
       <div className="hidden sm:block sm:col-span-3 p-5">
         {!user ? (
           <div className="p-5 bg-slate-700 rounded-lg">
@@ -159,7 +154,6 @@ const Xlayout: React.FC<XlayoutProps> = (props) => {
         )}
       </div>
 
-      {/* Bottom Mobile Navigation Bar */}
       <div className="sm:hidden fixed bottom-0 w-full bg-black border-t border-gray-700 flex justify-around py-3">
         {sidebarMenuItems.map((item) => (
           <Link key={item.title} href={item.link} className="text-white text-2xl">
