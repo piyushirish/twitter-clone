@@ -155,16 +155,19 @@ const Xlayout: React.FC<XlayoutProps> = (props) => {
       </div>
 
       <div className="sm:hidden fixed bottom-0 w-full bg-black border-t border-gray-700 flex justify-around py-3">
-       {!user ? (
-        <GoogleLogin onSuccess={handleLoginWithGoogle} />
-         ) : (
-             sidebarMenuItems.map((item) => (
+         {!user ? (
+           <GoogleLogin onSuccess={handleLoginWithGoogle} />
+          ) : (
+            sidebarMenuItems
+            .filter((item) => item.title !== "Bookmarks" && item.title !== "Explore") // Remove on mobile
+           .map((item) => (
              <Link key={item.title} href={item.link} className="text-white text-2xl">
-           {item.icon}
-       </Link>
-        ))
-        )}
-      </div>
+             {item.icon}
+           </Link>
+          ))
+          )}
+        </div>
+
     </div>
   );
 };
